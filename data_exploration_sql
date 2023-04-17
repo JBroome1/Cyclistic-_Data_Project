@@ -94,7 +94,28 @@ WHERE TIMESTAMP_DIFF(ended_at, started_at, MINUTE) <1
 OR TIMESTAMP_DIFF(ended_at, started_at, MINUTE) >1440
 
 --Found 74,613 instances of <1 minute or >1 day. These will be removed during cleaning--
+
+--For start_station_name there are 704,020 null values, end_station_name there are 715,834. These will likely be removed for cleaning based on the assumption that
+each ride MUST have a start and end station to be a valid ride--
+
+SELECT COUNTIF(start_station_name IS NULL) AS start_null_count,
+      COUNTIF(end_station_name IS NULL) AS end_null_count
+
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+
+--For start_station_id there are 704,152 null values and end_station_id there are 715,975 values. Right now I don't see these columns adding value to the questions
+being asked by the share holders, so we will think about how to proceed with these columns--
 	
+SELECT COUNTIF(start_station_id IS NULL) as null_count_start,
+    COUNTIF(end_station_id IS NULL) as null_count_end
 
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
 
+--The start_lat, start_lng, end_lat and end_lng will be important data to have for visualization purposes, all instances (9,734) will be removed--
 
+SELECT COUNTIF(start_lat IS NULL) as null_lat_start,
+    COUNTIF(start_lng IS NULL) as null_lng_start,
+    COUNTIF(end_lat IS NULL) as null_lat_end,
+    COUNTIF(end_lng IS NULL) as null_lng_end
+
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
