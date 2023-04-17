@@ -1,0 +1,46 @@
+-- To combine and clean the datat I decided to use SQL on the Google BigQuery platform. I saved the last 12 months of data in CSV files and created a data set in 
+Big QUery. I then joined all data tables into a combined table entitled cycle_data_yearly_combined.  I'm using the Union ALL in order to keep all the rows from the 
+specified data. 
+
+
+CREATE TABLE `airy-aria-383618.cycle_data_yearly.combined_data` AS
+SELECT *
+FROM (
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.april_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.may_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.may_1_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.june_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.june_1_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.july_2022_data`
+  UNION ALL  
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.august_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.august_1_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.september_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.september_1_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.october_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.november_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.december_2022_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.january_2023_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.february_2023_data`
+  UNION ALL
+  SELECT * FROM `airy-aria-383618.cycle_data_yearly.march_2023_data`
+)
+
+-- The created table is a total of 5,285,951 rows. Previewing my data I noticed right away there are many null values that need to be cleaned, as well as a column 
+that needs to be removed. I will proceed to check out each column to see what issues are and what need to be cleaned.--
+
+
+
