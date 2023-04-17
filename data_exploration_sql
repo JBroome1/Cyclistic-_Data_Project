@@ -42,5 +42,59 @@ FROM (
 -- The created table is a total of 5,285,951 rows. Previewing my data I noticed right away there are many null values that need to be cleaned, as well as a column 
 that needs to be removed. I will proceed to check out each column to see what issues are and what need to be cleaned.--
 
+--Looking at the ride_id column, I want to count the number of user id, the number of distinct user ids and the number of null values using this SQL code.
+
+SELECT 
+  COUNT (ride_id) AS all_ride_ids,
+  COUNT(DISTINCT ride_id) AS distinct_ride_ids,
+  COUNTIF(ride_id IS NULL) AS null_ride_ids
+
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+
+--This gave gave me 1,502 more ride_id values than distinct ride_id values and 89 null values. This will need to be addressed during cleaning.--
+
+--Looking at the rideable_type column, I want to make sure it only has either of 3 values; classic_bike, docked_bike, and electric_bike--
+
+SELECT DISTINCT rideable_type
+
+From `airy-aria-383618.cycle_data_yearly.combined_data`
+
+--returned 4 values; Null, classic_bike, docked_bike, and electric_bike. I then checked how many null values with the following code and found 88 null values--
+
+SELECT COUNT (*) AS null_count
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE rideable_type IS NULL;
+
+--For the next 2 columns, started_at and ended_at, I checked to see that they are datetime format.  I used SQL to identify they were all in the correct format and by
+returning NULL if they were incorrect and found 88 NULL values--
+
+SELECT
+  started_at,
+  DATETIME(started_at) AS parsed_started_at,
+  ended_at,
+  DATETIME(ended_at) AS parsed_ended_at,
+
+FROM
+  `airy-aria-383618.cycle_data_yearly.combined_data`;
+
+SELECT COUNTIF(started_at IS NULL) AS null_count
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+--I then counted the number of actual null values, 88, to determine that they are all correctly formatted with 88 null values--
+
+SELECT 
+  COUNTIF(started_at IS NULL) AS null_started_at_count,
+  COUNTIF(ended_at IS NULL) AS null_ended_at_count,
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+
+--My understanding is that no ride times should be under 1 minute or over 1 day, I want to check and see if those values exist--
+
+SELECT *
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE TIMESTAMP_DIFF(ended_at, started_at, MINUTE) <1
+OR TIMESTAMP_DIFF(ended_at, started_at, MINUTE) >1440
+
+--Found 74,613 instances of <1 minute or >1 day. These will be removed during cleaning--
+	
+
 
 
