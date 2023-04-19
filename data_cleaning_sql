@@ -1,0 +1,83 @@
+-- I attmepted to filter out the null values of my data set and it only removed 88 rows (5,285,951 from original table and 5,285,863 after the filter). 
+
+SELECT *
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE ride_id IS NOT NULL
+  OR rideable_type IS NOT NULL
+  OR started_at IS NOT NULL
+  OR ended_at IS NOT NULL
+  OR start_station_name IS NOT NULL
+  OR start_station_id IS NOT NULL
+  OR end_station_name IS NOT NULL
+  OR end_station_id IS NOT NULL
+  OR start_lat IS NOT NULL
+  OR start_lng IS NOT NULL
+  OR end_lat IS NOT NULL
+  OR end_lng IS NOT NULL
+  OR member_casual IS NOT NULL
+  OR string_field_13 IS NOT NULL
+  OR ride_length IS NOT NULL
+  OR day_of_week IS NOT NULL;
+  
+  --Obviously this is not correct and I immediately found null values in the start_station and end_station columns, I then ran another querty to filter out null 
+  values and filtered out 316,328 more null values for a total of 4,969,535 rows. 
+  
+   SELECT * 
+  FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+  WHERE start_station_name IS NOT NULL
+  OR start_station_id IS NOT NULL
+  OR end_station_name IS NOT NULL
+  OR end_station_id IS NOT NULL
+  
+  --HOWEVER...looking at my data I still have 3,703 cells in start_station_name and start_station_id that have null values. At this point I'm suspecting some empty 
+  strings or whitespace action, so I run the following query to trim the columns that contain non null values that are not empty strings or whitespace. This resulted
+  in a total of 4,581,799 rows (filtered out 387,736 rows)
+  
+   SELECT *
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE TRIM(start_station_name) <> '' AND TRIM(start_station_id) <> '';
+
+--now my end_station_name and end_station_id are looking a little suspect with null values so I run the same query on those columns for the same reason. This ended
+with at total of 4,569,976 rows, filtering out 11,823 more rows.
+
+ SELECT *
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE TRIM(end_station_name) <> '' AND TRIM(end_station_id) <> '';
+
+--I'm learning right? I combined all of thes queries into 1 SQL query to get rid of all null values, all values with whitespace and irregular characters, and filtered
+out the useless string_field_13 column.  I'm left with 4,182,267 rows of data.
+
+SELECT * EXCEPT(string_field_13)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE 
+  (ride_id IS NOT NULL
+  OR rideable_type IS NOT NULL
+  OR started_at IS NOT NULL
+  OR ended_at IS NOT NULL
+  OR start_station_name IS NOT NULL
+  OR start_station_id IS NOT NULL
+  OR end_station_name IS NOT NULL
+  OR end_station_id IS NOT NULL
+  OR start_lat IS NOT NULL
+  OR start_lng IS NOT NULL
+  OR end_lat IS NOT NULL
+  OR end_lng IS NOT NULL
+  OR member_casual IS NOT NULL
+  OR string_field_13 IS NOT NULL
+  OR ride_length IS NOT NULL
+  OR day_of_week IS NOT NULL)
+  AND 
+  (start_station_name IS NOT NULL
+  OR start_station_id IS NOT NULL
+  OR end_station_name IS NOT NULL
+  OR end_station_id IS NOT NULL)
+  AND 
+  (TRIM(start_station_name) <> '' 
+  AND TRIM(start_station_id) <> '')
+  AND 
+  (TRIM(end_station_name) <> '' 
+  AND TRIM(end_station_id) <> '')
+  AND 
+  (REGEXP_CONTAINS(start_station_name, r'^[[:print:]]*$')
+  AND REGEXP_CONTAINS(start_station_id, r'^[[:print:]]*$'))
+
