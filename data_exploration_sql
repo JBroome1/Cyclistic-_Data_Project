@@ -119,3 +119,39 @@ SELECT COUNTIF(start_lat IS NULL) as null_lat_start,
     COUNTIF(end_lng IS NULL) as null_lng_end
 
 FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+
+--The member_casual column is imperative data to this analysis, I checked , this column to ensure there are no null values as well as it only contained one of the 
+two values.  There are 88 null values which will be deleted, all other values are "member" or "casual" --
+
+SELECT COUNT(*)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE member_casual IS NULL;
+
+SELECT COUNT(*)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE member_casual IS NOT NULL
+  AND member_casual NOT LIKE 'member'
+  AND member_casual NOT LIKE 'casual';
+  
+  --string field 13 columns is not need and will be deleted for the final table--
+  
+  --ride_length and day_of_week colums were two columns that I added when playing around the data after downloading it.  88 null values in ride_length and day_0f_week
+  which will be deleted, I've already checked th ride length so see if the values and <1 minute and over 1 day, i checked the remaining columns in day_of_week to make
+  sure there contain only values 1 to 7.--
+  
+  SELECT COUNT(*)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE ride_length IS NULL;
+
+SELECT COUNT(*)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE day_of_week  IS NULL;
+
+SELECT COUNT(*)
+FROM `airy-aria-383618.cycle_data_yearly.combined_data`
+WHERE day_of_week IS NOT NULL
+  AND day_of_week NOT BETWEEN 1 AND 7;
+  
+  
+
+
