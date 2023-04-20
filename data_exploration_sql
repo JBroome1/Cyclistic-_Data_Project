@@ -103,8 +103,7 @@ SELECT COUNTIF(start_station_name IS NULL) AS start_null_count,
 
 FROM `airy-aria-383618.cycle_data_yearly.combined_data`
 
---For start_station_id there are 704,152 null values and end_station_id there are 715,975 values. Right now I don't see these columns adding value to the questions
-being asked by the share holders, so we will think about how to proceed with these columns--
+--For start_station_id there are 704,152 null values and end_station_id there are 715,975 values. These will be reomved during cleaning--
 	
 SELECT COUNTIF(start_station_id IS NULL) as null_count_start,
     COUNTIF(end_station_id IS NULL) as null_count_end
