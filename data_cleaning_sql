@@ -81,3 +81,14 @@ WHERE
   (REGEXP_CONTAINS(start_station_name, r'^[[:print:]]*$')
   AND REGEXP_CONTAINS(start_station_id, r'^[[:print:]]*$'))
 
+--Now I want to see only the DISTINCT ride ids in the ride_id column, filter out the ride times that are < 1 minute and >1 day, all other null values have been removed.
+Data is clean and ready to analyze and will be saved to a new table.--
+
+SELECT *
+FROM `airy-aria-383618.cycle_data_yearly.cleaned_table_1`
+WHERE ride_id IN (
+  SELECT DISTINCT ride_id
+  FROM `airy-aria-383618.cycle_data_yearly.cleaned_table_1`
+)
+AND (TIMESTAMP_DIFF(ended_at, started_at, MINUTE) > 1
+OR TIMESTAMP_DIFF(ended_at, started_at, MINUTE) < 1440);
