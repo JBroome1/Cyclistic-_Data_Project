@@ -1,0 +1,163 @@
+--Count number of rides for members and casual depending on the type of ride--
+
+WITH ride_type AS (
+  SELECT
+    member_casual,
+    rideable_type,
+    COUNT(*) AS ride_count
+  FROM
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  GROUP BY
+    member_casual,
+    rideable_type
+  ORDER BY
+    member_casual,
+    ride_count DESC
+)SELECT * FROM ride_type;
+
+--The average length of ride for members and casual users--
+
+WITH length_of_ride AS (
+  SELECT
+    member_casual,
+    ROUND(AVG(EXTRACT(HOUR FROM ride_length)*3600 + EXTRACT(MINUTE FROM ride_length)*60 + EXTRACT(SECOND FROM ride_length)) / 60, 2) AS avg_ride_length_minutes
+  FROM
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  GROUP BY
+    member_casual
+)
+
+SELECT *
+FROM length_of_ride;
+
+--The most popular days of the week to ride for members and casual users--
+
+WITH most_popular_desc AS (
+  SELECT 
+    member_casual, 
+    CASE 
+      WHEN day_of_week = 1 THEN 'Sunday'
+      WHEN day_of_week = 2 THEN 'Monday'
+      WHEN day_of_week = 3 THEN 'Tuesday'
+      WHEN day_of_week = 4 THEN 'Wednesday'
+      WHEN day_of_week = 5 THEN 'Thursday'
+      WHEN day_of_week = 6 THEN 'Friday'
+      WHEN day_of_week = 7 THEN 'Saturday'
+      ELSE NULL 
+    END AS day_of_week_name,
+    COUNT(*) AS ride_count
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  GROUP BY 
+    member_casual, 
+    day_of_week_name
+  ORDER BY 
+    member_casual, 
+    ride_count DESC
+)
+SELECT * FROM most_popular_desc;
+
+--Most popular ride times for memebers and casual users, finding the most commont start of ride time--
+
+WITH ride_times AS (
+  SELECT 
+    member_casual,
+    EXTRACT(HOUR FROM started_at) AS start_hour
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+)
+SELECT 
+  member_casual, 
+  start_hour, 
+  COUNT(*) AS ride_count
+FROM 
+  ride_times
+GROUP BY 
+  member_casual, 
+  start_hour
+ORDER BY 
+  member_casual, 
+  ride_count DESC
+  
+-- Most popular member start stations
+
+WITH member_start AS (
+  SELECT 
+    start_station_name, 
+    ROUND(AVG(start_lat), 4) AS start_lat, 
+    ROUND(AVG(start_lng), 4) AS start_lng, 
+    COUNT(*) AS num_of_rides
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  WHERE 
+    member_casual = 'member' 
+  GROUP BY 
+    start_station_name
+  ORDER BY 
+    num_of_rides DESC
+)
+
+SELECT * FROM member_start;
+
+--Most popular casual start stations
+
+WITH casual_start AS (
+  SELECT 
+    start_station_name, 
+    ROUND(AVG(start_lat), 4) AS start_lat, 
+    ROUND(AVG(start_lng), 4) AS start_lng, 
+    COUNT(*) AS num_of_rides
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  WHERE 
+    member_casual = 'casual' 
+  GROUP BY 
+    start_station_name
+  ORDER BY 
+    num_of_rides DESC
+)
+
+SELECT * FROM casual_start;
+
+-- Most popular member end stations
+
+WITH member_end AS (
+  SELECT 
+    end_station_name, 
+    ROUND(AVG(end_lat), 4) AS end_lat, 
+    ROUND(AVG(end_lng), 4) AS end_lng, 
+    COUNT(*) AS num_of_rides
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  WHERE 
+    member_casual = 'member' 
+  GROUP BY 
+    end_station_name
+  ORDER BY 
+    num_of_rides DESC
+)
+
+SELECT * FROM member_end;
+
+
+--Most popular casual end stations 
+
+WITH casual_end AS (
+  SELECT 
+    end_station_name, 
+    ROUND(AVG(end_lat), 4) AS end_lat, 
+    ROUND(AVG(end_lng), 4) AS end_lng, 
+    COUNT(*) AS num_of_rides
+  FROM 
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  WHERE 
+    member_casual = 'casual' 
+  GROUP BY 
+    end_station_name
+  ORDER BY 
+    num_of_rides DESC
+)
+
+SELECT * FROM casual_end;
+
+
