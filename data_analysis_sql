@@ -1,4 +1,4 @@
---Count number of rides for members and casual depending on the type of ride--
+## Count number of rides for members and casual depending on the type of ride
 
 WITH ride_type AS (
   SELECT
@@ -15,7 +15,7 @@ WITH ride_type AS (
     ride_count DESC
 )SELECT * FROM ride_type;
 
---The average length of ride for members and casual users--
+## The average length of ride for members and casual users
 
 WITH length_of_ride AS (
   SELECT
@@ -30,7 +30,7 @@ WITH length_of_ride AS (
 SELECT *
 FROM length_of_ride;
 
---The most popular days of the week to ride for members and casual users--
+## The most popular days of the week to ride for members and casual users
 
 WITH most_popular_desc AS (
   SELECT 
@@ -57,7 +57,7 @@ WITH most_popular_desc AS (
 )
 SELECT * FROM most_popular_desc;
 
---Most popular ride times for memebers and casual users, finding the most commont start of ride time--
+## Most popular ride times for memebers and casual users, finding the most commont start of ride time
 
 WITH ride_times AS (
   SELECT 
@@ -77,9 +77,28 @@ GROUP BY
   start_hour
 ORDER BY 
   member_casual, 
-  ride_count DESC
-  
--- Most popular member start stations
+  ride_count DESC;
+
+  ## The number of rides per month for member and casual riders
+
+  WITH rides_per_month AS (
+  SELECT
+    member_casual,
+    DATE_TRUNC(DATE(started_at), MONTH) AS month,
+    COUNT(*) AS ride_count
+  FROM
+    `airy-aria-383618.cycle_data_yearly.cleaned_data_final`
+  GROUP BY
+    member_casual,
+    month
+  ORDER BY
+    member_casual,
+    ride_count DESC
+)
+
+SELECT * FROM rides_per_month;
+
+## Most popular member start stations
 
 WITH member_start AS (
   SELECT 
@@ -99,7 +118,8 @@ WITH member_start AS (
 
 SELECT * FROM member_start;
 
---Most popular casual start stations
+
+## Most popular casual start stations
 
 WITH casual_start AS (
   SELECT 
@@ -119,7 +139,7 @@ WITH casual_start AS (
 
 SELECT * FROM casual_start;
 
--- Most popular member end stations
+## Most popular member end stations
 
 WITH member_end AS (
   SELECT 
@@ -140,7 +160,7 @@ WITH member_end AS (
 SELECT * FROM member_end;
 
 
---Most popular casual end stations 
+## Most popular casual end stations 
 
 WITH casual_end AS (
   SELECT 
